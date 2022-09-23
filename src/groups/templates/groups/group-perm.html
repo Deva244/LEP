@@ -1,0 +1,41 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            {{ member }} Exma Perm
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<div class="content-section">
+    <form method="POST"> {% csrf_token %}
+        <div class="form-group">
+            <div class="media">
+                <div class="media-body">
+                    <h3 class="account-heading">{{ member }}</h3>
+                    {% for teacher in teacher_query %}
+                        {% if teacher.teacher_email == member.email %}
+                            <p class="text-secondary">Teacher's Name : {{ teacher.teacher_name }}</p>
+                            <p class="text-secondary">Exam Permission : <b>{{ teacher.exam_perm }}</b></p>
+                            {% if teacher.exam_perm == False %}
+                                Do you want to grant <b>{{ member }}</b> exam permissions?
+                                <button class="btn btn-success" type="submit">Yes</button>
+                                <a class="btn btn-danger" href="../../">No</a>
+                            {% elif teacher.exam_perm == True %}
+                                Do you want to revoke <b>{{ member }}</b>'s exam permissions?
+                                <button class="btn btn-success" type="submit">Yes</button>
+                                <a class="btn btn-danger" href="../../">No</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

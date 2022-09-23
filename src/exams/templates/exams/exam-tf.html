@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            Exam Setup | True or False Questions
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    <table class="form form-table">
+        <legend><b>True or False</b></legend>
+        {% if exam_model_on %}
+          <legend><b>Exam Model : {{ exam_model }}</b></legend>
+          {% if exam_model == 1 %}
+            {% if question_count == questions_1m %}
+              <a class="btn btn-info" href="{% url 'exam-tf' group_name exam_name exam_model_plus %}">Finish</a>
+            {% else %}
+              {{ form|crispy }}
+              <tr><td colspan="2"><button class="btn btn-info" type="submit"> Next ➭ </button></td></tr>
+            {% endif %}
+          {% else %}
+            {% if question_count == questions_2m %}
+              <a class="btn btn-info" href="{% url 'group-manage' group_name %}">Finish</a>
+            {% else %}
+              {{ form|crispy }}
+              <tr><td colspan="2"><button class="btn btn-info" type="submit"> Next ➭ </button></td></tr>
+            {% endif %}
+          {% endif %}
+
+      {% else %}
+
+        {% if question_count == questions_1m %}
+          <a class="btn btn-info" href="{% url 'group-manage' group_name %}">Finish</a>
+        {% else %}
+          {{ form|crispy }}
+          <tr><td colspan="2"><button class="btn btn-info" type="submit"> Next ➭ </button></td></tr>
+        {% endif %}
+
+      {% endif %}
+    </table>
+  </form>
+
+{% endblock content %}

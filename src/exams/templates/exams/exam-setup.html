@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            Exam Setup | Settings
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    <table class="form form-table">
+      <legend><b>Exam Settings</b></legend>
+      {{ form|crispy }}
+      <tr><td colspan="2"><button class="btn btn-info" type="submit"> Continue ➭ </button></td></tr>
+    </table>
+  </form>
+
+{% endblock content %}

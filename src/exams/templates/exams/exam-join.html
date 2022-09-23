@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            Enter | {{ exam.exam_name }}
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<div class="content-section">
+    <form method="POST"> {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ group.group_name }}/{{ exam.exam_name }}</legend>
+            <div>
+                <h2><b>Rules & Instructions</b></h2>
+                <h5><b>Before entering the exam the system will need to verify your identity</b></h5>
+                <p>- Make sure to have a profile picture set.</p>
+                <p>- Make sure to be sitting in front of the camera before pressing <b>Verify</b>.</p>
+                <p>- Make sure to be in a properly lit location so the facial recognition system manages to verify your identity correctly.</p>
+                <p>- If the verification <b>fails</b> it will be automatically restarted up to <b>4 more times</b>, if it still fails after, then you won't be able to enter this exam.</p>
+                <p>- Make sure to submit your answers before the exam time is up, else you may risk losing it.</p>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <a class="btn btn-info" type="submit" href="{% url 'face-detect' group.group_name exam.exam_name %}">Verify</a>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
+
+{% block sidebar %}
+
+{% endblock sidebar %}

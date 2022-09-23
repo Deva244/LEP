@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            Verify | {{ exam.exam_name }}
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<div class="content-section">
+    <form method="POST"> {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ exam.exam_name }}</legend>
+        </fieldset>
+        {% if True in result %}
+            <h3>Identity Verified Successfully</h3>
+            <p>You can now enter the exam</p>
+            <a class="btn btn-info outline" type="submit" href="{% url 'exam' group.group_name exam.exam_name %}">Enter</a>
+        {% else %}
+            <h3>Verification failed</h3>
+            <p>You are now <b>banned</b> from entering <b>this</b> exam</p>
+            <a class="btn btn-info outline" href="{% url 'group-manage' group.group_name %}"> Go Back </a>
+        {% endif %}
+        <div class="form-group">
+        </div>  
+    </form>
+</div>
+
+{% endblock content %}

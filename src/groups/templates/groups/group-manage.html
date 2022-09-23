@@ -1,0 +1,129 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            Group - {{ group_name }}
+        {% endblock title %}
+    </title>
+</head>
+ 
+{% block content %}
+
+<div>
+    <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+        <h2><b>{{ group_name }} - {{ group_code }}</b></h2>
+
+        <legend class="border-bottom mb-1">Current User</legend>
+        <div class="content-section">
+            <div class="media">
+                <img class="rounded-circle account-img" src="{{ user.image.url }}">
+                <div class="media-body">
+                    <h4 class="account-heading">{{ user.get_full_name }}</h4>
+
+                    {% if user.account_type == "manager" %}
+                        <h6 class="text-secondary">Manager</h6>
+                        <a class="btn btn-primary" href="{% url 'group-settings' group_name %}" type="submit">Group Settings</a>
+                        <a class="btn btn-secondary" href="{% url 'exam-setup' group_name %}" type="submit">Setup Exam</a>
+
+                    {% elif user.account_type == "teacher" %}
+                        {% for teacher in teacher %}
+                            {% if teacher.teacher_email == user.email %}
+                                <h6 class="text-secondary">Exam Permission : {{ teacher.exam_perm }}</h6>
+                                <a class="btn btn-secondary" href="{% url 'exam-setup' group_name %}" type="submit">Setup Exam</a>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% elif user.account_type == "student" %}
+                        <h6 class="text-secondary">Student</h6>
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-1"><b>Members List</b></legend>
+            <div class="table-responsive">
+                <table class="table table-striped table-dark table-bordered table-sm">
+                    <caption>{{ members }} Members</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">{{ manager.name }}</th>
+                            <th scope="row">{{ group_owner }}</th>
+                            <th scope="row">Manager</th>
+                            <th scope="row"></th>
+                        </tr>
+                        {% for instance in teacher %}
+                            <tr>
+                                <th scope="row">{{ instance.teacher_name }}</th>
+                                <th scope="row">{{ instance.teacher_email }}</th>
+                                <th scope="row">Teacher</th>
+                                <th scope="row">
+                                    {% if user.get_full_name == manager.name %}
+                                    <a class="btn btn-danger btn-sm" href="{% url 'group-kick' group_name instance.teacher_email %}" type="submit">Remove</a>
+                                    <a class="btn btn-info btn-sm" href="{% url 'group-perm' group_name instance.teacher_email %}" type="submit">Exam Perm</a>
+                                    {% elif user.email == instance.teacher_email %}
+                                    <a class="btn btn-danger btn-sm" href="{% url 'group-leave' group_name %}" type="submit">Leave</a>
+                                    {% endif %}
+                                </th>
+                            </tr>
+                        {% endfor %}
+                        {% for instance in student %}
+                            <tr>
+                                <th scope="row">{{ instance.student_name }}</th>
+                                <th scope="row">{{ instance.student_email }}</th>
+                                <th scope="row">Student</th>
+                                <th scope="row">
+                                    {% if user.get_full_name == manager.name %}
+                                    <a class="btn btn-danger btn-sm" href="{% url 'group-kick' group_name instance.student_email %}" type="submit">Remove</a>
+                                    {% elif user.email == instance.student_email %}
+                                    <a class="btn btn-danger btn-sm" href="{% url 'group-leave' group_name %}" type="submit">Leave</a>
+                                    {% endif %}
+                                </th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+{% endblock content %}
+
+{% block sidebar %}
+
+<div class="col-md-4">
+    <div class="content-section">
+        <h3>Group News & Updates</h3>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-light">Place Holder</li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <h3>Exams</h3>
+        <ul class="list-group">
+            {% for exam in exams %}
+                <li class="list-group-item list-group-item-light">
+                    <a href="{% url 'exam-settings' group_name exam.exam_name %}">{{ exam.exam_name }}</a>
+                    <p>
+                        Date : {{ exam.date }}
+                        <br>
+                        Posted By : {{ exam.created_by }}
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+    
+{% endblock sidebar %}

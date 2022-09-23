@@ -1,0 +1,93 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+<head>
+    <title>
+        {% block title %}
+            Exam | {{ exam.exam_name }}
+        {% endblock title %}
+    </title>
+</head>
+
+{% block scripts %}
+    <script src="{% static 'main/main.js' %}" defer></script>
+{% endblock scripts %}
+
+{% block content %}
+
+<div>
+    <form method="POST"> {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ group.group_name }}\{{ exam.exam_name }}</legend>
+        </fieldset>
+        <div class="table-responsive">
+            <legend><b>1- Multiple Choice Questions:</b></legend>
+            {% for mcq in mcq_query %}
+                <table class="table table-striped table-bordered table-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Q: {{ mcq.title }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1. {{ mcq.choice1 }}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">2. {{ mcq.choice2 }}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">3. {{ mcq.choice3 }}</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">4. {{ mcq.choice4 }}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+            <legend><b>2- True or False Questions:</b></legend>
+            {% for tf in tf_query %}
+                <table class="table table-striped table-bordered table-sm">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Q: {{ tf.title }}</th>
+                        </tr>
+                    </thead>
+                </table>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
+
+{% block sidebar %}
+
+<div class="col-md-4">
+    <div id='exam-duration'>
+        <h3>Exam duration : {{ exam.duration }}</h3>
+    </div>
+    <!-- <div>Time Left : </div>
+    <div id="countdown-box"></div> -->
+
+    <div class="content-section">
+        <legend>Answer Sheet</legend>
+        <p>Choose the correct answers and then click <b>Submit</b></p>
+        <form method="POST"> {% csrf_token %}
+            {% for mcq in mcq_query %}
+                <b>Q. {{ mcq.title }}</b>
+                {{ mcq_form|crispy }}
+            {% endfor %}
+            {% for tf in tf_query %}
+                <b>Q. {{ tf.title }}</b>
+                {{ tf_form|crispy }}
+            {% endfor %}
+            <a class="btn btn-info" href="{% url 'exam-end' group.group_name exam.exam_name %}">Submit</a>
+        </form>
+    </div>
+</div>
+
+{% endblock sidebar %}

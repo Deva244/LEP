@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            {{ group_name}}'s Settings
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<div class="content-section">
+    <div class="media">
+        <div class="media-body">
+          <h2 class="account-heading">{{ group_name }}</h2>
+          <p class="text-secondary">Group Code : {{ group_code }}</p>
+          <p class="text-secondary">Manager : {{ group_owner }}</p>
+          <p class="text-secondary">Members : {{ members }}</p>
+        </div>
+    </div>
+    <form method="POST"> {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Group Info</legend>
+            {{ settings_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-info" type="submit">Update Info</button>
+        </div>  
+    </form>
+</div>
+
+{% endblock content %}
+
+{% block sidebar %}
+
+<div class="col-md-4">
+        <div class="content-section">
+            <h3>Delete Group</h3>
+            <ul class="list-group">
+                <a class="btn btn-danger" href="{% url 'group-delete' group_name %}" type="submit">🗑️ Delete</a>
+            </ul>
+        </div>
+    <div class="content-section">
+        <h3>Teachers' Permissions</h3>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-dark">
+                {% for teacher in teacher %}
+                    Name : <b>{{ teacher.teacher_name }}</b>
+                    Exam Perm : <b>{{ teacher.exam_perm }}</b>
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+{% endblock sidebar %}

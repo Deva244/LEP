@@ -1,0 +1,6 @@
+*Lib
+*Scripts
+
+LEP.code-workspace
+pyvenv.cfg
+*.pyc

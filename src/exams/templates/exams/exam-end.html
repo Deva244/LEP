@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            Grade | {{ exam.exam_name }}
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<div class="content-section">
+    <form method="POST"> {% csrf_token %}
+        <legend class="border-bottom mb-4">{{ group.group_name }}/{{ exam.exam_name }}</legend>
+        <h4>You have completed the exam</h4>
+        <div>
+            <p>You answered <b>4/5</b> questions correctly</p>
+            <P>Your Percentage : <b>80 % </b></P>
+            <a class="btn btn-info" type="submit" href="{% url 'group-manage' group.group_name %}">Finish</a>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
+
+{% block sidebar %}
+
+{% endblock sidebar %}

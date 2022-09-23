@@ -1,0 +1,50 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+          Settings | {{ exam.exam_name }}
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="content-section">
+        <div class="media">
+            <div class="media-body">
+              <h2 class="account-heading">{{ exam.exam_name }}</h2>
+              <p class="text-secondary">Date : {{ exam.date }}</p>
+              {% if exam.disp_duration < 60 %}
+                <p class="text-secondary">Duration : {{ exam.duration }} Minutes</p>
+              {% else %}
+                <p class="text-secondary">Duration : {{ exam.duration }} Hour(s)</p>
+              {% endif %}
+              {% if exam.exam_model %}
+                <p class="text-secondary">Model(s) : 2 Models</p>
+                <p class="text-secondary">Question(s) : {{ exam.no_of_questions }} Questions per Model</p>
+              {% else %}
+                <p class="text-secondary">Model(s) : 1 Model</p>
+                <p class="text-secondary">Question(s) : {{ exam.no_of_questions }} Question(s)</p>
+              {% endif %}
+              <p class="text-secondary">Posted on : {{ exam.created_date }}</p>
+              <p class="text-secondary">Posted By : {{ exam.created_by }}</p>
+            </div>
+        </div>
+        {% if user.account_type == "manager" or user.account_type == "teacher" %}
+            {% if user.email == exam.created_by %}
+                <a class="btn btn-info" href="{% url 'exam-edit' group_name exam.exam_name %}" type="submit"> Edit </a>
+                <a class="btn btn-danger" href="{% url 'exam-delete' group_name exam.exam_name %}" type="submit"> Delete </a>
+            {% elif user.email != exam.created_by and user.account_type == "manager" %}
+                <a class="btn btn-danger" href="{% url 'exam-delete' group_name exam.exam_name %}" type="submit"> Delete </a>
+            {% endif %}
+        {% elif user.account_type == "student" %}
+            <a class="btn btn-success" href="{% url 'exam-join' group_name exam.exam_name %}" type="submit">Enter</a>
+        {% endif %}
+    </div>
+  </form>
+
+{% endblock content %}

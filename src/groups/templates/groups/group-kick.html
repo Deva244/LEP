@@ -1,0 +1,24 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+<head>
+    <title>
+        {% block title %}
+            Kick {{ member }}
+        {% endblock title %}
+    </title>
+</head>
+
+{% block content %}
+
+<div class="content-section">
+    <form method="POST"> {% csrf_token %}
+        <div class="form-group">
+            <h3>Kick "{{ member }}"?</h3>
+            <button class="btn btn-success" type="submit">Yes</button>
+            <a class="btn btn-danger" href="../../">No</a>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
